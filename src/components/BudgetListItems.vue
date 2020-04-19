@@ -1,6 +1,6 @@
 <template>
   <div class="list">
-    <div class="list-item" v-for="(item, prop) in list" :key="prop">
+    <div class="list-item" v-for="(item, prop) in GET_LIST" :key="prop">
       <span>
         <i class="el-icon-top" v-if="isIncome(item.type)"></i>
         <i class="el-icon-bottom" v-else></i>
@@ -15,25 +15,24 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
+
 export default {
-  name: 'BudgetListItem',
-  props: {
-    list: {
-      type: Object,
-      default: () => ({}),
-    },
-  },
+  name: "BudgetListItem",
   data: () => ({}),
   methods: {
+    ...mapActions("list", ["DELETE_ITEM"]),
     deleteItem(id) {
-      this.$emit('deleteItem', id);
+      this.DELETE_ITEM(id);
     },
     isIncome(type) {
-      if (type === 'OUTCOME') return false;
+      if (type === "OUTCOME") return false;
       return true;
-    },
+    }
   },
-  computed: {},
+  computed: {
+    ...mapGetters("list", ["GET_LIST"])
+  }
 };
 </script>
 

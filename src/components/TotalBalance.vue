@@ -1,23 +1,30 @@
 <template>
-  <ElCard class="balance-wrap">
-    <div class="total-value" :style="{ color: totalColor }">
-      Баланс: {{ total }}
-    </div>
-  </ElCard>
+  <div class="balance-wrap" :style="{ color: totalBalanceColor }">
+    Баланс: {{ totalBalance }}
+    <ElDivider />
+  </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
-  name: 'TotalBalance',
-  props: {
-    total: {
-      type: Number,
-      default: 0,
-    },
-  },
+  name: "TotalBalance",
   computed: {
-    totalColor() {
-      let color = this.total == 0 ? 'black' : this.total > 0 ? 'green' : 'red';
+    ...mapGetters("list", ["GET_LIST"]),
+    totalBalance() {
+      return Object.values(this.GET_LIST).reduce(
+        (acc, item) => (acc += item.value),
+        0
+      );
+    },
+    totalBalanceColor() {
+      let color =
+        this.totalBalance == 0
+          ? "black"
+          : this.totalBalance > 0
+          ? "green"
+          : "red";
       return color;
     },
   },
@@ -25,13 +32,10 @@ export default {
 </script>
 
 <style scoped>
-.total-value {
-  font-size: 20px;
+.balance-wrap {
+  font-size: 18px;
   text-transform: uppercase;
   text-align: center;
-}
-.balance-wrap {
-  max-width: 500px;
   margin: 10px auto;
 }
 </style>

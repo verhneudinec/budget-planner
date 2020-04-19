@@ -20,45 +20,54 @@
         <ElInput v-model.number="formData.value" />
       </ElFormItem>
 
-      <ElButton type="primary" @click="onSubmit">Добавить</ElButton>
+      <ElButton class="submitButton" type="primary" @click="onSubmit"
+        >Добавить</ElButton
+      >
     </ElForm>
   </ElCard>
 </template>
 
 <script>
+import { mapActions } from "vuex";
 export default {
-  name: 'Form',
+  name: "Form",
   data: () => ({
-    header: 'Добавление элемента',
+    header: "Добавление элемента",
     formData: {
-      type: 'INCOME',
-      comment: '',
-      value: '',
+      type: "INCOME",
+      comment: "",
+      value: "",
     },
     rules: {
       comment: [
-        { required: true, message: 'Введите комментарий', trigger: 'blur' },
+        { required: true, message: "Введите комментарий", trigger: "blur" },
       ],
       value: [
         {
           required: true,
-          message: 'Введите значение',
-          trigger: 'blur',
+          message: "Введите значение",
+          trigger: "blur",
         },
-        { type: 'number', message: 'Здесь должно быть число', trigger: 'blur' },
+        { type: "number", message: "Здесь должно быть число", trigger: "blur" },
       ],
     },
   }),
   methods: {
+    ...mapActions("list", ["ADD_ITEM"]),
     onSubmit() {
       this.$refs.addItemForm.validate((valid) => {
-        if (valid) this.$emit('submitForm', { ...this.formData });
+        const newObj = { ...this.formData };
+        if (valid) this.ADD_ITEM(newObj);
         this.$refs.addItemForm.resetFields();
       });
     },
-    validateValue(value) {
-      console.log(value);
-      return false;
+    onSubmitForm(data) {
+      const newObj = {
+        ...data,
+        id: String(Math.random()),
+      };
+
+      this.$set(this.list, newObj.id, newObj);
     },
   },
   computed: {},
@@ -69,8 +78,12 @@ export default {
 .form-card {
   max-width: 500px;
   margin: auto;
+  margin-bottom: 30px;
 }
 .form-card .type-select {
+  width: 100%;
+}
+.submitButton {
   width: 100%;
 }
 </style>

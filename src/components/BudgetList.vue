@@ -1,8 +1,9 @@
 <template>
   <div class="budget-list-wrap">
     <ElCard>
-      <template v-if="isEmpty">
-        <BudgetListItem :list="list" @deleteItem="deleteItem" />
+      <template v-if="isNotEmpty">
+        <TotalBalance />
+        <BudgetListItems />
       </template>
       <ElAlert v-else type="info" :title="emptyTitle" :closable="false" />
     </ElCard>
@@ -10,31 +11,24 @@
 </template>
 
 <script>
-import BudgetListItem from '@/components/BudgetListItem';
-
+import BudgetListItems from "@/components/BudgetListItems";
+import TotalBalance from "@/components/TotalBalance";
+import { mapGetters } from "vuex";
 export default {
-  name: 'BudgetList',
+  name: "BudgetList",
   components: {
-    BudgetListItem,
-  },
-  props: {
-    list: {
-      type: Object,
-      default: () => ({}),
-    },
+    BudgetListItems,
+    TotalBalance,
   },
   data: () => ({
-    header: 'Budget List',
-    emptyTitle: 'List is empty!',
+    header: "Бюджет",
+    emptyTitle: "Список пустой!",
   }),
   computed: {
-    isEmpty() {
-      return Boolean(Object.keys(this.list).length);
-    },
-  },
-  methods: {
-    deleteItem(id) {
-      this.$emit('deleteItem', id);
+    ...mapGetters("list", ["GET_LIST"]),
+    isNotEmpty() {
+      Object.keys(this.GET_LIST).length;
+      return Boolean(Object.keys(this.GET_LIST).length);
     },
   },
 };
@@ -44,5 +38,6 @@ export default {
 .budget-list-wrap {
   max-width: 500px;
   margin: auto;
+  margin-bottom: 60px;
 }
 </style>
